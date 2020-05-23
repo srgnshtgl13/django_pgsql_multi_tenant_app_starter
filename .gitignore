@@ -9,7 +9,7 @@ venv
 db.sqlite3
 media
 /static
-requirements.txt
+#requirements.txt
 
 # Do not store .js build files from static
 # JavaScript
