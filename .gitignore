@@ -1,0 +1,18 @@
+### Django ###
+*.pyc
+*~
+*.log
+*.pot
+/.vscode
+__pycache__
+venv
+db.sqlite3
+media
+/static
+requirements.txt
+
+# Do not store .js build files from static
+# JavaScript
+node_modules/
+# webpack-stats.json
+

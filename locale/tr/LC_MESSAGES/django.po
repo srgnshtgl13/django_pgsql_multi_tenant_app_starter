@@ -1,0 +1,15 @@
+#: account/templates/account/login.html:29
+msgid "email"
+msgstr "E-posta"
+
+#: account/templates/account/login.html:31
+msgid "email_help"
+msgstr "E-posta adresiniz başka kimse ile paylaşılmayacak."
+
+#: account/templates/account/login.html:34
+msgid "password"
+msgstr "Şifre"
+
+#: account/templates/account/login.html:38
+msgid "login-btn"
+msgstr "Giriş"
