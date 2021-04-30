@@ -3,28 +3,66 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-Datas
-{% for t in ts %}
-<li>{{t.test_ad}}</li>
-{% endfor %}
+<div class="d-flex flex-column flex-wrap justify-content-center">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active text-primary" 
+            id="add-articles-tab" 
+            data-bs-toggle="tab"
+            data-bs-target="#add-articles"
+            type="button" role="tab"
+            aria-controls="add-articles"
+            aria-selected="true">
+                Add Articles
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-primary" 
+            id="articles-tab" 
+            data-bs-toggle="tab"
+            data-bs-target="#articles"
+            type="button" role="tab"
+            aria-controls="articles"
+            aria-selected="true">
+                Articles
+          </button>
+        </li>
+    </ul>
+    
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="add-articles" role="tabpanel" aria-labelledby="add-articles-tab">
+            <form method="POST" action="{% url 'home:home' %}" class="col-6">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" name="title" class="form-control" id="title" placeholder="Article 1">
+                </div>
+                <div class="mb-3">
+                    <label for="desc" class="form-label">Description</label>
+                    <textarea name="desc" class="form-control" id="desc" rows="5"></textarea>
+                </div>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="tab-pane fade show" id="articles" role="tabpanel" aria-labelledby="articles-tab">
+            <div class="list-group mt-3">
+                {% for article in articles %}
+                  <a href="#" class="list-group-item list-group-item-action mt-3" aria-current="true">
+                    <div class="d-flex w-100 justify-content-between">
+                      <h5 class="mb-1">{{article.title}}</h5>
+                      <small>{{article.created_at}}</small>
+                    </div>
+                    <p class="mb-1">{{article.desc}}</p>
+                  </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
-
 {% block js %}
-<script>
-    function toggleDropdown(e) {
-        const _d = $(e.target).closest('.dropdown'),
-            _m = $('.dropdown-menu', _d);
-        setTimeout(function () {
-            const shouldOpen = e.type !== 'click' && _d.is(':hover');
-            _m.toggleClass('show', shouldOpen);
-            _d.toggleClass('show', shouldOpen);
-            $('[data-toggle="dropdown"]', _d).attr('aria-expanded', shouldOpen);
-        }, e.type === 'mouseleave' ? 200 : 0);
-    }
 
-    $('body')
-        .on('mouseenter mouseleave', '.dropdown', toggleDropdown)
-        .on('click', '.dropdown-menu a', toggleDropdown);
-</script>
 {% endblock %}

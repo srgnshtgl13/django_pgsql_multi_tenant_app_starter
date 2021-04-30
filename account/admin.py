@@ -3,20 +3,20 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-
-
 from .models import MyUser
+from client.models import Client
 
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+    password2 = forms.CharField(
+        label='Password confirmation', widget=forms.PasswordInput)
 
     class Meta:
         model = MyUser
-        fields = ('email', 'date_of_birth')
+        fields = ('email', 'date_of_birth', 'is_active',)
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -44,7 +44,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = MyUser
-        fields = ('email', 'first_name', 'last_name', 'password', 'date_of_birth', 'is_active', 'is_superuser')
+        fields = ('email', 'first_name', 'last_name', 'password', 'date_of_birth', 'is_active',)
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -61,22 +61,24 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'first_name', 'is_superuser', 'date_joined')
+    list_display = ('email', 'first_name', 'client', 'is_superuser', 'date_joined')
     list_filter = ('is_superuser',)
-    readonly_fields = ['date_joined'] #without this if we add date_joined to Important dates fields it will give us an error
+    # without this if we add date_joined to Important dates fields it will give us an error
+    readonly_fields = ['date_joined']
     fieldsets = (
         (None, {'fields': ('email', 'password', )}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'date_of_birth',)}),
-        ('Permissions', {'fields': ('is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions',)}),
+        ('Personal info', {
+         'fields': ('first_name', 'last_name', 'date_of_birth',)}),
+        ('Permissions', {'fields': ('is_superuser', 'is_active', 'groups', 'user_permissions',)}),
         ('Important dates', {'fields': ('last_login', 'date_joined', )}),
     )
-    
+
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'date_of_birth', 'password1', 'password2',),
+            'fields': ('email', 'first_name', 'last_name', 'date_of_birth', 'client', 'password1', 'password2',),
         }),
     )
     search_fields = ('email', 'first_name', )

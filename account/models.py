@@ -51,9 +51,7 @@ class MyUser(AbstractBaseUser,PermissionsMixin):
     is_staff = models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.')
     is_superuser = models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.')
     date_joined = models.DateTimeField(auto_now_add=True)
-    firma = models.ForeignKey('firmalar.Firma', related_name='users', on_delete=models.CASCADE, blank=True, null=True)
-    # firma_id = models.IntegerField(null=True, blank=True)
-
+    client = models.ForeignKey('client.Client', related_name='users', on_delete=models.CASCADE, blank=True, null=True)
 
     objects = MyUserManager()
 

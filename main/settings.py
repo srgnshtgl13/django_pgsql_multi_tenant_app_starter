@@ -11,16 +11,17 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv
 from django.utils.translation import gettext_lazy as _
+load_dotenv()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '2n!l*$rg3mbwb+$@%hzy!2$f3ni7v72^w!o3!7ta9*&nt_761#'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,17 +32,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 SHARED_APPS = (
-    'tenant_schemas',  # mandatory, should always be before any django app
-    'firmalar', # you must list the app where your tenant model resides in
-    'account',
-
+    'tenant_schemas',
+    'tenant_schemas',
+    'django.contrib.admin',
+    'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
 
-    # everything below here is optional
-    # 'django.contrib.auth',
-    # 'django.contrib.sessions',
-    # 'django.contrib.messages',
-    # 'django.contrib.admin',
+    'client',
+    'account',
 )
 
 TENANT_APPS = (
@@ -52,20 +53,20 @@ TENANT_APPS = (
 )
 
 INSTALLED_APPS = [
-    'tenant_schemas',  # mandatory, should always be before any django app
-    'firmalar',
+    'tenant_schemas',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'client',
     'account',
     'home'
 
 ]
 
-TENANT_MODEL = "firmalar.Firma" # app.Model
+TENANT_MODEL = "client.Client" # app.Model
 
 MIDDLEWARE = [
     'account.middleware.LoginRequired',
@@ -77,11 +78,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'home.middleware.TenantMiddleware',
+    'main.middleware.SchemaMiddleware',
 ]
 
 ROOT_URLCONF = 'main.urls'
-PUBLIC_SCHEMA_URLCONF = 'urls_public'
 
 TEMPLATES = [
     {
@@ -106,20 +106,14 @@ WSGI_APPLICATION = 'main.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-""" DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-} """
 DATABASES = {
     'default': {
         'ENGINE': 'tenant_schemas.postgresql_backend',
-        'NAME': 'dja_db',
-        'USER': 'dja',
-        'PASSWORD': 'dja',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': os.getenv("DB_PORT"),
     }
 }
 DATABASE_ROUTERS = (
@@ -158,11 +152,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-LOCALE_PATHS = (os.path.join(BASE_DIR, 'locale'),)
-LANGUAGES = (
-    ('en', _('English')),
-    ('tr', _('Turkish')),
-)
+LOCALE_PATHS = (os.path.join(BASE_DIR, 'locale'), )
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
@@ -171,10 +161,10 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-# AUTHENTICATION_BACKENDS = ['main.backends.CustomBackend'] # if you will use username and email both for login
-
-MEDIA_ROOT = '/data/media'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = '/media/'
-DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
+
+# if you will use username and email both for login
+# AUTHENTICATION_BACKENDS = ['main.backends.CustomBackend']
 
 AUTH_USER_MODEL = 'account.MyUser'
